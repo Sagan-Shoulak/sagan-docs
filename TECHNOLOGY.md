@@ -40,8 +40,8 @@ checkout. The component's entire `docs/` file set must equal its locked path
 list, and paths may not conflict with another component or site overlay.
 Those files replace only their same-named locations in the generated site;
 `sources.json` records each component pin. A local rehearsal of all three
-component candidates passed a strict MkDocs build, but their GitHub remotes
-do not yet exist and the canonical lock keeps them inactive.
+component checkouts passed a strict MkDocs build, and their GitHub remotes
+now exist, but the canonical lock keeps them inactive.
 The source bootstrap reads the same lock, clones only active entries, and
 refuses to move or overwrite existing checkout work. The assembler's
 `--source-root` mode maps that exact checkout set automatically. Draft CI

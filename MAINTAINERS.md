@@ -9,10 +9,10 @@ verified_by: null
 
 # Maintaining the official Sagan docs
 
-This is a local extraction candidate, not a published or independently
-deployed repository. The existing site automation still targets monorepo
-layout. Do not run `deploy/`, `scripts/docs_versions.sh`, or a release command
-from this candidate. The project-wide release and `main` promotion hold stays
+This is a public split repository, but not yet independently deployed.
+The existing site automation still targets monorepo layout. Do not run
+`deploy/`, `scripts/docs_versions.sh`, or a release command from this
+repository. The project-wide release and `main` promotion hold stays
 in force until the owner explicitly reopens it and decides publication policy.
 
 ## Reproduce the pinned aggregate
