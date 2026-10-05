@@ -75,6 +75,12 @@ passed eight offline tests and a strict Windows MkDocs build. It did not
 activate their canonical entries or deploy the site. The existing unlisted
 contributor checkpoint page warning remained unchanged.
 
+The draft `.github/workflows/docs-checks.yml` runs offline contracts and
+strictly builds the pinned primary-source aggregate on Linux, Windows, and
+macOS. It has not run in an independent destination. When any component
+becomes active, update this workflow to check out that exact locked source;
+the assembler will otherwise fail closed for the missing component.
+
 ## Ownership, editing, and tests
 
 `docs-sources.lock` pins the consumed source. The six paths in its

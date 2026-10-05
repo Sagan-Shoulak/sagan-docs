@@ -42,6 +42,8 @@ Those files replace only their same-named locations in the generated site;
 `sources.json` records each component pin. A local rehearsal of all three
 component candidates passed a strict MkDocs build, but their GitHub remotes
 do not yet exist and the canonical lock keeps them inactive.
+The draft three-platform CI validates only the current primary-active lock;
+hosted execution and component-source CI wiring remain unverified.
 
 The dependency direction is one-way: the docs site consumes component docs
 and exact source locks; a language, extension, physics, rendering, or game

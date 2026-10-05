@@ -1,0 +1,37 @@
+name: Official docs checks
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pinned-aggregate:
+    name: Pinned aggregate (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned docs dependencies
+        run: python -m pip install -r requirements-docs.txt
+      - name: Test source and ownership contracts
+        run: python -m unittest discover -s tests -p assemble_docs_test.py -v
+      - name: Clone exact primary documentation source
+        shell: bash
+        run: |
+          git clone --no-checkout https://github.com/Sagan-Shoulak/sagan.git build/sources/sagan
+          git -C build/sources/sagan checkout --detach 4132c8c37f99dc5f89c7141f5780b583b64d192e
+      - name: Assemble and strictly build the pinned site
+        shell: bash
+        run: |
+          python scripts/assemble_docs.py --sagan build/sources/sagan --output build/assembled-ci
+          python -m mkdocs build --strict --clean -f build/assembled-ci/mkdocs.yml
