@@ -9,8 +9,12 @@ technical accuracy and source of their sections.
 an exact commit. `scripts/assemble_docs.py` checks that source, copies its
 documentation into a new generated tree, and overlays this repository's six
 explicitly listed site-owned files. It never alters the source checkout or an
-existing output directory. The remaining component sources are not yet
-active, and deployment remains paused.
+existing output directory. The lock also lists exact future mount paths for
+extension, physics, and rendering docs, all still `planned`. An active
+component must have a full pinned commit and a clean, exact-origin checkout;
+the assembler then replaces only its explicitly owned pages/assets and
+records that provenance. No split remote is active, and deployment remains
+paused.
 
 Start with [MAINTAINERS.md](MAINTAINERS.md) for Bash commands and recovery,
 [TECHNOLOGY.md](TECHNOLOGY.md) for the ownership model, and

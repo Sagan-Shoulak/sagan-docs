@@ -13,3 +13,31 @@ overlay_paths = [
   "stylesheets/brand.css",
   "stylesheets/status.css",
 ]
+
+[[components]]
+id = "sagan-vscode"
+state = "planned"
+url = "https://github.com/Sagan-Shoulak/sagan-vscode.git"
+paths = [
+  "getting-started/editor-support.md",
+  "tooling/editor-support.md",
+  "tooling/extension-readiness.md",
+  "tooling/vscode-extension-roadmap.md",
+]
+
+[[components]]
+id = "sagan-physics"
+state = "planned"
+url = "https://github.com/Sagan-Shoulak/sagan-physics.git"
+paths = ["standard-library/physics.md"]
+
+[[components]]
+id = "sagan-render"
+state = "planned"
+url = "https://github.com/Sagan-Shoulak/sagan-render.git"
+paths = [
+  "standard-library/rendering.md",
+  "assets/images/render-r1-shape-text.bmp",
+  "assets/images/render-r2-two-body.bmp",
+  "assets/images/render-r3-lagrange.bmp",
+]

@@ -33,6 +33,16 @@ still assume monorepo layout and are not yet wired to the aggregate. This
 candidate does not implement component-PR previews, cross-repository version
 selection, approved publication gating, or a hosting cutover.
 
+The lock now names the future extension, physics, and rendering mounts as
+`planned`, with exact destination paths. When one becomes `active`, the
+assembler requires its owner URL, full commit pin, and a matching clean
+checkout. The component's entire `docs/` file set must equal its locked path
+list, and paths may not conflict with another component or site overlay.
+Those files replace only their same-named locations in the generated site;
+`sources.json` records each component pin. A local rehearsal of all three
+component candidates passed a strict MkDocs build, but their GitHub remotes
+do not yet exist and the canonical lock keeps them inactive.
+
 The dependency direction is one-way: the docs site consumes component docs
 and exact source locks; a language, extension, physics, rendering, or game
 build must not depend on this repository to compile. A workspace lock may

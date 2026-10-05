@@ -45,6 +45,36 @@ build reported the existing unlisted
 `contributing/late-bound-face-defaults-checkpoint.md` page but exited zero.
 Linux/macOS and independent hosted CI are not yet verified.
 
+## Component documentation mounts
+
+`docs-sources.lock` lists VS Code, physics, and rendering page/asset paths as
+`planned`. They are not fetched or published from nonexistent split remotes.
+After a component repository exists and passes its extraction gate, change
+only its reviewed lock entry to `state = "active"`, add its exact `commit`,
+and supply a clean checkout at that URL and commit. For all three active
+components, the assembly syntax is:
+
+```bash
+python scripts/assemble_docs.py \
+  --sagan "$sagan_checkout" \
+  --component sagan-vscode="$vscode_checkout" \
+  --component sagan-physics="$physics_checkout" \
+  --component sagan-render="$render_checkout" \
+  --output build/assembled-components
+build/docs-venv/Scripts/python.exe -m mkdocs build --strict --clean \
+  -f build/assembled-components/mkdocs.yml
+```
+
+Use `build/docs-venv/bin/python` on Linux/macOS. Exactly the active
+components must be supplied; a planned component must not be supplied.
+Each component's full `docs/` file set must equal its listed paths, with no
+symlinks, dirty checkout, wrong origin, or wrong HEAD. The generated
+`sources.json` records URL, commit, and paths for every mounted component.
+The local ignored-lock rehearsal mounted all three extracted candidates,
+passed eight offline tests and a strict Windows MkDocs build. It did not
+activate their canonical entries or deploy the site. The existing unlisted
+contributor checkpoint page warning remained unchanged.
+
 ## Ownership, editing, and tests
 
 `docs-sources.lock` pins the consumed source. The six paths in its
