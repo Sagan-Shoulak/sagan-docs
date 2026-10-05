@@ -168,19 +168,34 @@ def assemble(root: Path, lock_path: Path, checkout: Path, output: Path,
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sagan", type=Path, required=True)
+    parser.add_argument("--sagan", type=Path)
+    parser.add_argument("--source-root", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--lock", type=Path, default=ROOT / "docs-sources.lock")
     parser.add_argument("--component", action="append", default=[], metavar="ID=CHECKOUT")
     args = parser.parse_args()
     try:
-        component_checkouts = {}
-        for item in args.component:
-            identifier, separator, path = item.partition("=")
-            if not separator or not identifier or not path or identifier in component_checkouts:
-                raise ValueError(f"invalid or duplicate --component: {item!r}")
-            component_checkouts[identifier] = Path(path).absolute()
-        assemble(ROOT, args.lock, args.sagan.absolute(), args.output.absolute(),
+        if args.source_root is not None:
+            if args.sagan is not None or args.component:
+                raise ValueError("--source-root cannot be combined with --sagan or --component")
+            source_root = args.source_root.absolute()
+            _, _, _, entries = read_lock(args.lock)
+            sagan_checkout = source_root / "sagan"
+            component_checkouts = {
+                entry["id"]: source_root / entry["id"]
+                for entry in entries if entry["state"] == "active"
+            }
+        else:
+            if args.sagan is None:
+                raise ValueError("provide --source-root or --sagan")
+            sagan_checkout = args.sagan.absolute()
+            component_checkouts = {}
+            for item in args.component:
+                identifier, separator, path = item.partition("=")
+                if not separator or not identifier or not path or identifier in component_checkouts:
+                    raise ValueError(f"invalid or duplicate --component: {item!r}")
+                component_checkouts[identifier] = Path(path).absolute()
+        assemble(ROOT, args.lock, sagan_checkout, args.output.absolute(),
                  component_checkouts)
     except (OSError, ValueError, tomllib.TOMLDecodeError) as error:
         print(f"Documentation assembly failed: {error}", file=sys.stderr)

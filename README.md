@@ -16,6 +16,11 @@ the assembler then replaces only its explicitly owned pages/assets and
 records that provenance. No split remote is active, and deployment remains
 paused.
 
+`scripts/bootstrap_docs_sources.py` clones only active lock entries to
+ordinary ignored checkouts and refuses to move or overwrite an existing
+checkout. The draft CI uses those exact sources and assembles them with
+`--source-root`; hosted CI has not been run in an independent docs repo.
+
 Start with [MAINTAINERS.md](MAINTAINERS.md) for Bash commands and recovery,
 [TECHNOLOGY.md](TECHNOLOGY.md) for the ownership model, and
 [CODEX_START.md](CODEX_START.md) for a new chat. The broader sequencing lives

@@ -67,6 +67,22 @@ build/docs-venv/Scripts/python.exe -m mkdocs build --strict --clean \
 
 Use `build/docs-venv/bin/python` on Linux/macOS. Exactly the active
 components must be supplied; a planned component must not be supplied.
+For ordinary exact-lock operation, the bootstrap and aggregate can instead
+derive that set automatically:
+
+```bash
+python scripts/bootstrap_docs_sources.py --root build/sources
+python scripts/assemble_docs.py --source-root build/sources \
+  --output build/assembled-locked
+build/docs-venv/Scripts/python.exe -m mkdocs build --strict --clean \
+  -f build/assembled-locked/mkdocs.yml
+```
+
+Bootstrap clones missing active sources and detaches at their exact pins.
+It never updates, resets, or deletes an existing checkout: wrong origin,
+wrong HEAD, dirty work, or a partial clone needs inspection and deliberate
+recovery. A failure after earlier sources cloned is not atomic. Use a fresh
+output path for each assembly; the assembler refuses existing output.
 Each component's full `docs/` file set must equal its listed paths, with no
 symlinks, dirty checkout, wrong origin, or wrong HEAD. The generated
 `sources.json` records URL, commit, and paths for every mounted component.
@@ -75,11 +91,10 @@ passed eight offline tests and a strict Windows MkDocs build. It did not
 activate their canonical entries or deploy the site. The existing unlisted
 contributor checkpoint page warning remained unchanged.
 
-The draft `.github/workflows/docs-checks.yml` runs offline contracts and
-strictly builds the pinned primary-source aggregate on Linux, Windows, and
-macOS. It has not run in an independent destination. When any component
-becomes active, update this workflow to check out that exact locked source;
-the assembler will otherwise fail closed for the missing component.
+The draft `.github/workflows/docs-checks.yml` runs all offline contracts,
+bootstraps every active locked source, and strictly builds the aggregate on
+Linux, Windows, and macOS. Twelve offline tests and the exact-lock local
+Windows build passed; hosted CI has not run in an independent destination.
 
 ## Ownership, editing, and tests
 

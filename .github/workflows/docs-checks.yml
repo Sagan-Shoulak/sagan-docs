@@ -24,14 +24,11 @@ jobs:
       - name: Install pinned docs dependencies
         run: python -m pip install -r requirements-docs.txt
       - name: Test source and ownership contracts
-        run: python -m unittest discover -s tests -p assemble_docs_test.py -v
-      - name: Clone exact primary documentation source
-        shell: bash
-        run: |
-          git clone --no-checkout https://github.com/Sagan-Shoulak/sagan.git build/sources/sagan
-          git -C build/sources/sagan checkout --detach 4132c8c37f99dc5f89c7141f5780b583b64d192e
+        run: python -m unittest discover -s tests -p '*_test.py' -v
+      - name: Clone exact active documentation sources
+        run: python scripts/bootstrap_docs_sources.py --root build/sources
       - name: Assemble and strictly build the pinned site
         shell: bash
         run: |
-          python scripts/assemble_docs.py --sagan build/sources/sagan --output build/assembled-ci
+          python scripts/assemble_docs.py --source-root build/sources --output build/assembled-ci
           python -m mkdocs build --strict --clean -f build/assembled-ci/mkdocs.yml
