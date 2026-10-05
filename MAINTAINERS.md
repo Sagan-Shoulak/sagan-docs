@@ -17,6 +17,13 @@ in force until the owner explicitly reopens it and decides publication policy.
 
 ## Reproduce the pinned aggregate
 
+The exact workspace lock calls `scripts/workspace-build.sh` to create a
+repository-local Python environment, bootstrap the pinned sources, and strictly
+build a fresh aggregate. It calls `scripts/workspace-test.sh` for the offline
+contracts. The coordinator provides `SAGAN_PYTHON_EXECUTABLE`; outside the
+workspace the scripts use `python3` or `python` on PATH. Both hooks leave
+generated files under ignored `build/` and do not deploy the site.
+
 Install Git, Python 3.11+, and the pinned packages in `requirements-docs.txt`.
 Use Git Bash and point `sagan_checkout` at a clean ordinary clone whose origin
 and HEAD match `docs-sources.lock`:
