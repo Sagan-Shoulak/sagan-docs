@@ -10,9 +10,9 @@ verified_by: null
 # Official documentation technology overview
 
 The official site is one publication surface assembled from several owners.
-The `sagan` repository currently owns language, toolchain, math, and
-project-development documentation; future component repositories will own
-their own technical pages. This repository owns the MkDocs theme,
+The `sagan` repository owns language, toolchain, math, and
+project-development documentation; the extension, physics, and rendering
+repositories now own their exported technical pages. This repository owns the MkDocs theme,
 cross-component navigation, versions, previews, deployment, and publication
 policy. It must not silently become the second author of a component page.
 
@@ -30,18 +30,18 @@ the generated tree includes the two required site hooks. A strict MkDocs
 build can therefore test a pinned aggregate without moving component pages
 out of their source repository. The existing `docs.sh` and deployment scripts
 still assume monorepo layout and are not yet wired to the aggregate. This
-candidate does not implement component-PR previews, cross-repository version
+repository does not yet implement component-PR previews, cross-repository version
 selection, approved publication gating, or a hosting cutover.
 
-The lock now names the future extension, physics, and rendering mounts as
-`planned`, with exact destination paths. When one becomes `active`, the
+The lock activates the extension, physics, and rendering mounts at exact
+commits and destination paths. For an `active` entry, the
 assembler requires its owner URL, full commit pin, and a matching clean
 checkout. The component's entire `docs/` file set must equal its locked path
 list, and paths may not conflict with another component or site overlay.
 Those files replace only their same-named locations in the generated site;
 `sources.json` records each component pin. A local rehearsal of all three
-component checkouts passed a strict MkDocs build, and their GitHub remotes
-now exist, but the canonical lock keeps them inactive.
+component checkouts passed a strict MkDocs build, and the canonical lock now
+activates them. The newly activated lock still needs hosted CI verification.
 The source bootstrap reads the same lock, clones only active entries, and
 refuses to move or overwrite existing checkout work. The assembler's
 `--source-root` mode maps that exact checkout set automatically. Draft CI

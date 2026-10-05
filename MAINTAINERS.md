@@ -47,11 +47,9 @@ Linux/macOS and independent hosted CI are not yet verified.
 
 ## Component documentation mounts
 
-`docs-sources.lock` lists VS Code, physics, and rendering page/asset paths as
-`planned`. They are not fetched or published from nonexistent split remotes.
-After a component repository exists and passes its extraction gate, change
-only its reviewed lock entry to `state = "active"`, add its exact `commit`,
-and supply a clean checkout at that URL and commit. For all three active
+`docs-sources.lock` activates the VS Code, physics, and rendering page/asset
+paths at exact commits. Their local four-source strict MkDocs build passed;
+hosted CI on this lock is still required before a site cutover. For all three active
 components, the assembly syntax is:
 
 ```bash
@@ -91,10 +89,11 @@ passed eight offline tests and a strict Windows MkDocs build. It did not
 activate their canonical entries or deploy the site. The existing unlisted
 contributor checkpoint page warning remained unchanged.
 
-The draft `.github/workflows/docs-checks.yml` runs all offline contracts,
+The `.github/workflows/docs-checks.yml` workflow runs all offline contracts,
 bootstraps every active locked source, and strictly builds the aggregate on
 Linux, Windows, and macOS. Twelve offline tests and the exact-lock local
-Windows build passed; hosted CI has not run in an independent destination.
+Windows build passed before activation; CI on the newly activated lock is
+still pending.
 
 ## Ownership, editing, and tests
 

@@ -2,7 +2,7 @@ schema_version = 1
 
 [sagan]
 url = "https://github.com/Sagan-Shoulak/sagan.git"
-commit = "4132c8c37f99dc5f89c7141f5780b583b64d192e"
+commit = "361027d7835ada3d7f9d6b699cce93ef45b5e053"
 
 [site]
 overlay_paths = [
@@ -16,8 +16,9 @@ overlay_paths = [
 
 [[components]]
 id = "sagan-vscode"
-state = "planned"
+state = "active"
 url = "https://github.com/Sagan-Shoulak/sagan-vscode.git"
+commit = "2c75759f86e34beed5cfab9180f9a2724624fa06"
 paths = [
   "getting-started/editor-support.md",
   "tooling/editor-support.md",
@@ -27,14 +28,16 @@ paths = [
 
 [[components]]
 id = "sagan-physics"
-state = "planned"
+state = "active"
 url = "https://github.com/Sagan-Shoulak/sagan-physics.git"
+commit = "89c1504a2580f63f55a7bc4266f7649f32481795"
 paths = ["standard-library/physics.md"]
 
 [[components]]
 id = "sagan-render"
-state = "planned"
+state = "active"
 url = "https://github.com/Sagan-Shoulak/sagan-render.git"
+commit = "1da0e94381d86aa197ed757edc44c3e2e16202c3"
 paths = [
   "standard-library/rendering.md",
   "assets/images/render-r1-shape-text.bmp",
