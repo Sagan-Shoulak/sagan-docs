@@ -1,0 +1,15 @@
+schema_version = 1
+
+[sagan]
+url = "https://github.com/Sagan-Shoulak/sagan.git"
+commit = "4132c8c37f99dc5f89c7141f5780b583b64d192e"
+
+[site]
+overlay_paths = [
+  "contributing/documentation-roadmaps.md",
+  "contributing/documentation.md",
+  "contributing/hosting.md",
+  "overrides/main.html",
+  "stylesheets/brand.css",
+  "stylesheets/status.css",
+]
