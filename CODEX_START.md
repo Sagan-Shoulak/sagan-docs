@@ -5,7 +5,8 @@ Start read-only. Read `AGENTS.md`, `TECHNOLOGY.md`, `MAINTAINERS.md`,
 fracture roadmap, and its versioned ecosystem/chat maps. Inspect current
 branch, HEAD, status, staged paths, source pins, and concurrent work. Report
 what the docs site owns versus what each component owns. This checkout is a
-local split candidate; independent deployment is not ready.
+public split repository; independent deployment and component aggregation
+still need validation.
 
 Prefer teaching me what to write through small steps, examples, review, and
 verification. Do not implement without an explicit request. For authorized
@@ -23,3 +24,17 @@ provide a ready-to-paste handoff with goal, evidence, constraints, pins, and
 verification. Do not assume shared chat history. Use Bash, never PowerShell.
 Preserve unrelated work and never push, publish, deploy, transfer, or change
 remote settings without current authorization.
+
+This tracked prompt is a one-time bootstrap. After reading it and orienting
+read-only, delete `CODEX_START.md` on a short-lived branch, commit that
+deletion and any required contract updates, then open a PR into `dev` linked
+to an onboarding issue. Do not
+recreate it; `AGENTS.md`, `TECHNOLOGY.md`, and `MAINTAINERS.md` remain the
+durable instructions.
+
+Use existing or new GitHub issues for substantive work, PRs into `dev` for
+review, and the organization Project for cross-repo milestones when access
+permits. Link each PR to its issue, record focused checks, source pins, and
+integration impact, and update Project status. If Project access is
+unavailable, record that in the issue and continue safe local verification.
+The split is tracked by Sagan-Shoulak/sagan#6.

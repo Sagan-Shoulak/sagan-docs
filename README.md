@@ -1,7 +1,6 @@
-# Sagan official docs (local split candidate)
+# Sagan official docs
 
-This is a local rehearsal of the future `sagan-docs` repository, not a
-published split. It owns site assembly, navigation, styling, versioning,
+This public split repository owns site assembly, navigation, styling, versioning,
 hosting, and publication; component repositories continue to own the
 technical accuracy and source of their sections.
 
@@ -13,7 +12,7 @@ existing output directory. The lock also lists exact future mount paths for
 extension, physics, and rendering docs, all still `planned`. An active
 component must have a full pinned commit and a clean, exact-origin checkout;
 the assembler then replaces only its explicitly owned pages/assets and
-records that provenance. No split remote is active, and deployment remains
+records that provenance. No component source is active in the lock, and deployment remains
 paused.
 
 `scripts/bootstrap_docs_sources.py` clones only active lock entries to
@@ -23,5 +22,6 @@ checkout. The draft CI uses those exact sources and assembles them with
 
 Start with [MAINTAINERS.md](MAINTAINERS.md) for Bash commands and recovery,
 [TECHNOLOGY.md](TECHNOLOGY.md) for the ownership model, and
-[CODEX_START.md](CODEX_START.md) for a new chat. The broader sequencing lives
+`CODEX_START.md` once if it still exists, then `AGENTS.md` for lasting chat
+guidance. The broader sequencing lives
 in the primary repository's multi-repository fracture roadmap.
