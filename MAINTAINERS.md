@@ -98,9 +98,11 @@ contributor checkpoint page warning remained unchanged.
 
 The `.github/workflows/docs-checks.yml` workflow runs all offline contracts,
 bootstraps every active locked source, and strictly builds the aggregate on
-Linux, Windows, and macOS. Twelve offline tests and the exact-lock local
-Windows build passed before activation; CI on the newly activated lock is
-still pending.
+Linux, Windows, and macOS. Hosted exact-lock builds pass on all three systems.
+The separate `Documentation preview` workflow produces a non-production site
+artifact, `sources.json`, and per-file SHA-256 evidence without publishing or
+using an HP1 runner. See [CUTOVER_READINESS.md](CUTOVER_READINESS.md) for the
+comparison, approval, cutover, and rollback gates.
 
 ## Ownership, editing, and tests
 
@@ -124,7 +126,9 @@ currently held.
 The current `scripts/docs.sh` still expects monorepo paths. Do not claim its
 `check`, `check-structure`, or `check-examples` commands validate this split
 candidate until they are rewired to exact component checkouts. The separate
-assembler tests and strict aggregate build are the present focused checks.
+assembler tests, strict aggregate build, and preview evidence check are the
+present focused checks. The split-repository workflows must not call the
+monorepo-era validation, version-publication, or deployment commands.
 
 ## Failure and recovery
 
