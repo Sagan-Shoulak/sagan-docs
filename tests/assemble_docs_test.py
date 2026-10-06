@@ -92,6 +92,10 @@ class AssembleDocsTest(unittest.TestCase):
         self.assertTrue((self.output / "scripts" / "docs_status.py").is_file())
         provenance = json.loads((self.output / "sources.json").read_text(encoding="utf-8"))
         self.assertEqual(self.commit, provenance["sagan_commit"])
+        public_provenance = json.loads(
+            (self.output / "docs" / "sources.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(provenance, public_provenance)
 
     def test_existing_output_is_never_overwritten(self) -> None:
         self.output.mkdir()

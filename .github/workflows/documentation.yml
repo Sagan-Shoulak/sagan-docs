@@ -53,6 +53,80 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           path: |
-            build/assembled-preview/build/docs-site/
-            build/assembled-preview/sources.json
+            build/assembled-preview/
             build/preview-evidence.json
+
+  publish-experimental:
+    name: Publish experimental version
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    needs: preview
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: sagan-docs-versions
+      cancel-in-progress: false
+    steps:
+      - name: Check out publication history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pinned documentation dependencies
+        run: python -m pip install -r requirements-docs.txt
+
+      - name: Download the validated preview
+        uses: actions/download-artifact@v4
+        with:
+          name: exact-lock-docs-preview
+          path: build/validated-preview
+
+      - name: Publish only the validated experimental aggregate
+        run: |
+          git config user.name "Sagan documentation automation"
+          git config user.email "sagan-docs@users.noreply.github.com"
+          mike deploy \
+            --config-file build/validated-preview/assembled-preview/mkdocs.yml \
+            --branch docs-site \
+            --push \
+            --update-aliases \
+            experimental
+          mike set-default \
+            --config-file build/validated-preview/assembled-preview/mkdocs.yml \
+            --branch docs-site \
+            --push \
+            experimental
+
+  deploy:
+    name: Deploy validated documentation to HP1
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    needs: publish-experimental
+    runs-on:
+      - self-hosted
+      - sagan-docs-hp1
+    environment: documentation
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    concurrency:
+      group: sagan-docs-hp1
+      cancel-in-progress: false
+    steps:
+      - name: Check out the validated publication owner
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Install the versioned site from this repository
+        env:
+          SAGAN_DOCS_ALLOW_LOCAL_INSTALL: '1'
+        run: bash deploy/docs/manage.sh install-hp1-local
+
+      - name: Verify local service health
+        run: curl --fail --silent --show-error http://127.0.0.1:8781/healthz

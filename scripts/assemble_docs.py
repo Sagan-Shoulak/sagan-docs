@@ -155,14 +155,16 @@ def assemble(root: Path, lock_path: Path, checkout: Path, output: Path,
         (stage / "scripts").mkdir()
         for hook in HOOKS:
             shutil.copy2(root / "scripts" / hook, stage / "scripts" / hook)
-        (stage / "sources.json").write_text(
-            json.dumps({"sagan_url": url, "sagan_commit": commit,
-                        "site_overlay_paths": overlays,
-                        "components": [{"id": identifier, "url": entry["url"],
-                                        "commit": entry["commit"], "paths": entry["paths"]}
-                                       for identifier, entry in sorted(active.items())]}, indent=2) + "\n",
-            encoding="utf-8",
-        )
+        provenance = json.dumps(
+            {"sagan_url": url, "sagan_commit": commit,
+             "site_overlay_paths": overlays,
+             "components": [{"id": identifier, "url": entry["url"],
+                              "commit": entry["commit"], "paths": entry["paths"]}
+                             for identifier, entry in sorted(active.items())]},
+            indent=2,
+        ) + "\n"
+        (stage / "sources.json").write_text(provenance, encoding="utf-8")
+        (stage / "docs" / "sources.json").write_text(provenance, encoding="utf-8")
         stage.rename(output)
 
 
