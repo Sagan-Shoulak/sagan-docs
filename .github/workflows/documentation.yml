@@ -1,120 +1,58 @@
-name: Documentation
+name: Documentation preview
 
 on:
   push:
-    branches:
-      - dev
-      - main
+    branches: [dev, main]
   pull_request:
-    branches:
-      - dev
-      - main
-    paths:
-      - "docs/**"
-      - "mkdocs.yml"
-      - "requirements-docs.txt"
-      - "scripts/docs.sh"
-      - "scripts/docs_examples_test.sh"
-      - "scripts/docs_status.py"
-      - "scripts/docs_release_check.py"
-      - "scripts/docs_versions.sh"
-      - "scripts/docs_versions_test.sh"
-      - "deploy/docs/**"
-      - "deploy/hp1/**"
-      - "deploy/hosting/update.sh"
-      - "src/**"
-      - "makefile"
-      - ".github/workflows/documentation.yml"
+    branches: [dev, main]
   workflow_dispatch:
-    inputs:
-      release_version:
-        description: "Published documentation version (MAJOR.MINOR.PATCH); leave blank to refresh experimental"
-        required: false
-        type: string
 
 permissions:
   contents: read
 
 jobs:
-  validate:
-    name: Validate documentation
+  preview:
+    name: Build exact-lock preview
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
-      - name: Set up documentation environment
-        run: bash scripts/docs.sh setup
-
-      - name: Build documentation strictly
-        run: bash scripts/docs.sh check
-
-      - name: Test versioned documentation layout
-        run: bash scripts/docs_versions_test.sh
-
-  publish-version:
-    name: Publish documentation version
-    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/dev'
-    needs: validate
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    concurrency:
-      group: sagan-docs-versions
-      cancel-in-progress: false
-    steps:
-      - name: Check out the validated commit and generated-docs history
-        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          fetch-depth: 0
+          python-version: '3.11'
 
-      - name: Set up documentation environment
-        run: bash scripts/docs.sh setup
+      - name: Install pinned documentation dependencies
+        run: python -m pip install -r requirements-docs.txt
 
-      - name: Publish experimental or released documentation
-        env:
-          RELEASE_VERSION: ${{ inputs.release_version }}
-          WORKFLOW_REF: ${{ github.ref }}
+      - name: Test source, ownership, and evidence contracts
+        run: python -m unittest discover -s tests -p '*_test.py' -v
+
+      - name: Clone exact active documentation sources
+        run: python scripts/bootstrap_docs_sources.py --root build/preview-sources
+
+      - name: Assemble and strictly build the preview
         run: |
-          if [[ -n "$RELEASE_VERSION" ]]; then
-            bash scripts/docs_versions.sh deploy-release "$RELEASE_VERSION"
-          elif [[ "$WORKFLOW_REF" == "refs/heads/dev" ]]; then
-            bash scripts/docs_versions.sh deploy-experimental
-          else
-            echo "Experimental documentation can only be published from dev." >&2
-            exit 1
-          fi
+          python scripts/assemble_docs.py \
+            --source-root build/preview-sources \
+            --output build/assembled-preview
+          python -m mkdocs build --strict --clean \
+            -f build/assembled-preview/mkdocs.yml
 
-  deploy:
-    name: Deploy documentation to HP1
-    if: github.event_name != 'pull_request'
-    needs:
-      - validate
-      - publish-version
-    runs-on:
-      - self-hosted
-      - sagan-docs-hp1
-    environment: documentation
-    permissions:
-      contents: read
-    timeout-minutes: 15
-    concurrency:
-      group: sagan-docs-hp1
-      cancel-in-progress: false
-    steps:
-      - name: Check out the validated commit
-        uses: actions/checkout@v7
+      - name: Record preview provenance and checksums
+        run: |
+          python scripts/docs_preview_evidence.py \
+            --assembled build/assembled-preview \
+            --output build/preview-evidence.json
+
+      - name: Upload non-production preview evidence
+        uses: actions/upload-artifact@v4
         with:
-          clean: true
-          fetch-depth: 0
-
-      - name: Set up documentation environment
-        run: bash scripts/docs.sh setup
-
-      - name: Synchronize stable release mirror
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: bash deploy/releases/sync.sh
-
-      - name: Install origin release locally
-        run: bash deploy/hosting/update.sh hp1-local
+          name: exact-lock-docs-preview
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            build/assembled-preview/build/docs-site/
+            build/assembled-preview/sources.json
+            build/preview-evidence.json
